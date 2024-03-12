@@ -106,7 +106,7 @@ class T3XUpdater():
 
     def do_update(self, file):
         fw_product, fw_version, fw_size = self.parse_update(file)
-        if not fw_product and fw_version:
+        if not (fw_product and fw_version):
             return False
 
         self.connect()
