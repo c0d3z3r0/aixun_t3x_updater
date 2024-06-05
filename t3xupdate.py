@@ -13,6 +13,7 @@ import sys
 import serial
 import time
 import logging
+import crcmod
 from logging import debug, info, warning, error
 from argparse import ArgumentParser
 from serial.tools import list_ports
@@ -70,6 +71,15 @@ class T3XUpdater():
         fw_size = os.stat(file).st_size
         if fw_size < 0x100:
             error(f"Bad update image file size: {fw_size} bytes.")
+            return (None, None, 0)
+
+        crc16fn = crcmod.mkCrcFun(0x18005, rev=True, initCrc=0xFFFF, xorOut=0x0000)
+        self.file.seek(0x64)
+        csum_file = int.from_bytes(self.file.read(2), "big")
+        self.file.seek(0x100)
+        csum_calc = crc16fn(self.file.read())
+        if csum_calc != csum_file:
+            error(f"Checksum mismatch: expected {csum:04X}, got {csum_calc:04X}")
             return (None, None, 0)
 
         self.file.seek(0x20)
