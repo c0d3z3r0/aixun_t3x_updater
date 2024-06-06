@@ -86,7 +86,7 @@ class T3XUpdater():
             return (None, None, 0)
 
         self.file.seek(0x20)
-        fw_product = self.file.read(8).split(b'_')[-1]
+        fw_product = self.file.read(16).rstrip(b'\xff').split(b'_')[-1]
         self.file.seek(0x40)
         fw_version = self.file.read(4)
         if fw_version == b'vers':
