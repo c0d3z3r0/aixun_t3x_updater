@@ -68,10 +68,13 @@ class T3XUpdater():
             error("Wrong firmware file. Update file required.")
             return (None, None,0)
 
-        fw_size = os.stat(file).st_size
-        if fw_size < 0x100:
-            error(f"Bad update image file size: {fw_size} bytes.")
+        file_size = os.stat(file).st_size
+        self.file.seek(0x60)
+        fw_size = int.from_bytes(self.file.read(4), "big") + 0x100
+        if file_size != fw_size:
+            error("Bad firmware file size: Expected {fw_size} bytes but file is {file_size} bytes.")
             return (None, None, 0)
+
 
         crc16fn = crcmod.mkCrcFun(0x18005, rev=True, initCrc=0xFFFF, xorOut=0x0000)
         self.file.seek(0x64)
@@ -90,9 +93,9 @@ class T3XUpdater():
             self.file.seek(0x47)
             fw_version = self.file.read(4)
 
-        info(f"Update: {fw_product.decode()} v{fw_version.decode()} ({fw_size} bytes)")
+        info(f"Update: {fw_product.decode()} v{fw_version.decode()} ({file_size} bytes)")
 
-        return (fw_product, fw_version, fw_size)
+        return (fw_product, fw_version, file_size)
 
     def enter_bootloader(self):
         identity = self.get_identity()
