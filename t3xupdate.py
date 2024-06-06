@@ -184,7 +184,7 @@ class T3XUpdater():
             error("Update failed!")
             return False
 
-        info("Update successful!")
+        info(f"Update successful! Installed FW version {fw_version.decode()}")
 
         return True
 
