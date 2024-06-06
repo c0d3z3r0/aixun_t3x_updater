@@ -79,7 +79,7 @@ class T3XUpdater():
         self.file.seek(0x100)
         csum_calc = crc16fn(self.file.read())
         if csum_calc != csum_file:
-            error(f"Checksum mismatch: expected {csum:04X}, got {csum_calc:04X}")
+            error(f"Checksum mismatch: expected {csum_file:04X}, got {csum_calc:04X}")
             return (None, None, 0)
 
         self.file.seek(0x20)
