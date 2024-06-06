@@ -72,7 +72,7 @@ class T3XUpdater():
         self.file.seek(0x60)
         fw_size = int.from_bytes(self.file.read(4), "big") + 0x100
         if file_size != fw_size:
-            error("Bad firmware file size: Expected {fw_size} bytes but file is {file_size} bytes.")
+            error(f"Bad firmware file size: Expected {fw_size} bytes but file is {file_size} bytes.")
             return (None, None, 0)
 
 
@@ -119,7 +119,7 @@ class T3XUpdater():
             if self.get_identity() == b'JC_boot':
                 return True
 
-        error("Could not enter bootloader. Identity {identity.decode()}")
+        error(f"Could not enter bootloader. Identity {identity.decode()}")
         return False
 
     def do_update(self, file):
