@@ -104,11 +104,16 @@ class T3XUpdater():
 
         elif identity == b'JC_User':
             info(f"Enter bootloader...")
-            ack = self.transfer(self.get_raw_version())
-            if not ack == b'JC_reset':
-                warning("Got no reset ACK, let's try anyways...")
-            time.sleep(3)
-            self.connect()
+            try:
+                ack = self.transfer(self.get_raw_version())
+            except serial.serialutil.SerialException:
+                warning("Got serial.serialutil.SerialException: The soldering station probably entered bootloader. Let's try to reconnect...")
+            else:
+                if not ack == b'JC_reset':
+                    warning("Got no reset ACK, let's try anyways...")
+            finally:
+                time.sleep(3)
+                self.connect()
 
             identity = self.get_identity()
             if self.get_identity() == b'JC_boot':
@@ -151,10 +156,18 @@ class T3XUpdater():
             if not data:
                 break
 
-            ack = self.transfer(data)
-            if not ack == b'ack_jcxx':
-                error("Update failed!")
-                return False
+            try:
+                ack = self.transfer(data)
+                if not ack == b'ack_jcxx':
+                    error("Update failed!")
+                    return False
+            except serial.serialutil.SerialException:
+                if offset == fw_size - 256:
+                    print(flush=True)
+                    warning("Got serial.serialutil.SerialException: The soldering station probably finished the update and restarted. Let's try to reconnect...")
+                else:
+                    error("Update failed!")
+                    return False
 
             percent = int(offset*100/fw_size)
             print(f"{percent}%...", end='')
