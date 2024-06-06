@@ -23,7 +23,7 @@ class T3XUpdater():
         pass
 
     def get_port(self):
-        ports = [p.device for p in list_ports.comports() if p.serial_number and p.serial_number.startswith("JCID_T3")]
+        ports = [p.device for p in list_ports.comports() if p.serial_number and p.serial_number.startswith(("JCID_T3","AIXUN_T320"))]
         if len(ports) > 1:
             error("Multiple T3x attached.")
             sys.exit(1)
