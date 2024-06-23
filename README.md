@@ -1,6 +1,6 @@
 # AIXUN T3x updater
 
-This tool allows updating of AiXun T3A/T3B without installing their vendor software or sign-up.
+This tool allows updating of AiXun T3A/T3B/T320 without installing their vendor software or sign-up.
 
 Instructions:
 
