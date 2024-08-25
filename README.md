@@ -4,9 +4,9 @@ This tool allows updating of AiXun T3A/T3B/T320/T420D without installing their v
 
 Instructions:
 
-1. Get firmware image either from [aixun_t3a_rev/bin](https://github.com/c0d3z3r0/aixun_t3a_rev/tree/master/bin) or like this `wget https://usr.tnyzeq.icu/~dd/aixun-updates/firmware/JC_M_T3A_1.36.bin`
+1. Get firmware image either from [aixun-updates.github.io](https://aixun-updates.github.io) or like this `wget https://usr.tnyzeq.icu/~dd/aixun-updates/firmware/JC_M_T3A_1.36.bin`
 2. Install dependencies: `pip install -r requirements.txt`
-3. Connect your T3A/T3B via USB
+3. Connect your soldering station via USB
 4. Run the updater: `./t3xupdate.py JC_M_T3A_1.xx.bin`
 
 ## License
