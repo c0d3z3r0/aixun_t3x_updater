@@ -10,12 +10,39 @@ __copyright__   = 'Copyright (c) 2024 Michael Niewöhner'
 
 import os
 import sys
-import serial
+import venv
+import subprocess
+import site
+
+def ensure_venv():
+    venv_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "venv")
+    
+    # Check if we're already in a virtual environment
+    if not hasattr(sys, 'real_prefix') and not (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix):
+        # Create venv if it doesn't exist
+        if not os.path.exists(venv_dir):
+            venv.create(venv_dir, with_pip=True)
+        
+        # Install packages to venv site-packages
+        site_packages = os.path.join(venv_dir, 'lib', f'python{sys.version_info.major}.{sys.version_info.minor}', 'site-packages')
+        
+        # Install required packages directly
+        subprocess.run([sys.executable, "-m", "pip", "install", 
+                       "--target", site_packages,
+                       "pyserial", "crcmod"])
+        
+        # Add venv site-packages to Python path
+        site.addsitedir(site_packages)
+
+if __name__ == '__main__':
+    ensure_venv()
+
 import time
 import logging
-import crcmod
 from logging import debug, info, warning, error
 from argparse import ArgumentParser
+import serial
+import crcmod
 from serial.tools import list_ports
 
 class T3XUpdater():
@@ -205,4 +232,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
