@@ -23,7 +23,7 @@ class T3XUpdater():
         pass
 
     def get_port(self):
-        ports = [p.device for p in list_ports.comports() if p.serial_number and p.serial_number.startswith(("JCID_T3","AIXUN_T320","JCID_T420D"))]
+        ports = [p.device for p in list_ports.comports() if p.serial_number and p.serial_number.startswith(("JCID_T3","AIXUN_T320","JCID_T420D","AIXUN_T413"))]
         if len(ports) > 1:
             error("Multiple T3x attached.")
             sys.exit(1)
@@ -57,12 +57,14 @@ class T3XUpdater():
     def get_version(self):
         return self.get_raw_version()[-4:]
 
-    def get_product(self):
-        return self.get_raw_version().split(b'_')[2]
+    def get_product(self, fw_product):
+        index = 1 if fw_product == b'T413' else 2
+        return self.get_raw_version().split(b'_')[index]
 
     def parse_update(self, file):
         self.file = open(file, 'rb')
-        if self.file.read(4) == b'JCID':
+        prefix = self.file.read(4)
+        if prefix == b'JCID' or (prefix == b'AIXU' and self.file.read(1) == b'N'):
             debug("Detected update file")
         else:
             error("Wrong firmware file. Update file required.")
@@ -128,7 +130,7 @@ class T3XUpdater():
             return False
 
         self.connect()
-        product = self.get_product()
+        product = self.get_product(fw_product)
         if not fw_product == product:
             error(f"Update product mismatch! fw={fw_product.decode()} vs. hw={product.decode()}")
             return False
