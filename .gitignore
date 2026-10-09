@@ -1,2 +1,21 @@
+# Upstream defaults
 __pycache__
 *.bin
+
+# Python virtual environment
+venv/
+.venv/
+
+# Python bytecode
+*.py[cod]
+
+# Flash logs (contain the station's USB serial number)
+*.log
+
+# Editor / OS clutter
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
